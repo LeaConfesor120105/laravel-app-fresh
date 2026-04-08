@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use App\Models\Ideas;
 use App\Models\Post;
+use App\Models\User;
 
 Route::view('/', 'welcome', [
     'greeting' => 'Hello, World!',
@@ -82,3 +83,59 @@ Route::patch('/posts/{post}', function (Post $post) {
     return redirect('/posts' . '/' . $post->id);
 }
 );
+
+// Users CRUD
+Route::get('/users', function(){
+    $users = User::all();
+
+    return view('users.index', [
+        'users' => $users,
+    ]);
+});
+
+Route::get('/users/create', function(){
+    return view('users.create');
+});
+
+Route::post('/users', function(){
+    User::create([
+        'email' => request('email'),
+        'first_name' => request('first_name'),
+        'last_name' => request('last_name'),
+        'middle_name' => request('middle_name'),
+        'nickname' => request('nickname'),
+        'age' => request('age'),
+        'address' => request('address'),
+        'contact_number' => request('contact_number'),
+        'password' => request('password'),
+    ]);
+
+    return redirect('/users');
+});
+
+Route::get('/users/{user}/edit', function (User $user) {
+    return view('users.edit', [
+        'user' => $user,
+    ]);
+});
+
+Route::patch('/users/{user}', function (User $user) {
+    $user->update([
+        'email' => request('email'),
+        'first_name' => request('first_name'),
+        'last_name' => request('last_name'),
+        'middle_name' => request('middle_name'),
+        'nickname' => request('nickname'),
+        'age' => request('age'),
+        'address' => request('address'),
+        'contact_number' => request('contact_number'),
+    ]);
+
+    return redirect('/users');
+});
+
+Route::delete('/users/{user}', function (User $user) {
+    $user->delete();
+
+    return redirect('/users');
+});
